@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: wp-app
+  name: wp-app
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: wp-app
+    spec:
+      containers:
+      - env:
+        - name: WORDPRESS_DB_PASSWORD
+          value: wordpress
+        - name: WORDPRESS_DB_USER
+          value: wordpress
+        - name: WORDPRESS_DB_HOST
+          value: db:3306
+        - name: WORDPRESS_DB_NAME
+          value: wordpress
+        image: wordpress:latest
+        name: wp-app
+        ports:
+        - containerPort: 80
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/www/html
+          name: wpapp-data
+      restartPolicy: Always
+      volumes:
+      - name: wpapp-data
+        persistentVolumeClaim:
+          claimName: wpapp-data
+status: {}
